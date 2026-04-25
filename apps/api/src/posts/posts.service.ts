@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PrismaService } from 'prisma/prisma.service';
-import { PostStatus } from '@prisma/client';
+import { PostStatus, Prisma } from '@prisma/client';
 import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
@@ -9,9 +13,13 @@ export class PostsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createPostDto: CreatePostDto) {
-    return await this.prisma.post.create({
-      data: { ...createPostDto, createdAt: new Date()}
-    });
+    try {
+      return await this.prisma.post.create({
+        data: { ...createPostDto, createdAt: new Date() },
+      });
+    } catch (error) {
+      this.handlePrismaError(error);
+    }
   }
 
   findAll() {
@@ -25,31 +33,58 @@ export class PostsService {
   }
 
   async findOne(id: number) {
-    return await this.prisma.post.findUnique({
+    const post = await this.prisma.post.findUnique({
       where: { id },
     });
+
+    if (!post) {
+      throw new NotFoundException(`Post with id ${id} not found`);
+    }
+
+    return post;
   }
 
   async findPublishedBySlug(slug: string) {
-    return await this.prisma.post.findUnique({
-      where: { slug },
+    const post = await this.prisma.post.findFirst({
+      where: {
+        slug,
+        status: PostStatus.published,
+      },
     });
+
+    if (!post) {
+      throw new NotFoundException(
+        `Published post with slug "${slug}" not found`,
+      );
+    }
+
+    return post;
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
-    return await this.prisma.post.update({
-      where: { id },
-      data: {... updatePostDto, publishedAt: this.resolvePublishedAt(updatePostDto)}
-    });
+    await this.ensureExists(id);
+    try {
+      await this.prisma.post.update({
+        where: { id },
+        data: {
+          ...updatePostDto,
+          publishedAt: this.resolvePublishedAt(updatePostDto),
+        },
+      });
+    } catch (error) {
+      this.handlePrismaError(error);
+    }
   }
 
   async delete(id: number) {
+    await this.ensureExists(id);
+
     return this.prisma.post.delete({
       where: { id },
     });
   }
 
-    private resolvePublishedAt(dto: CreatePostDto | UpdatePostDto) {
+  private resolvePublishedAt(dto: CreatePostDto | UpdatePostDto) {
     if (dto.status === PostStatus.published) {
       return new Date();
     }
@@ -64,9 +99,28 @@ export class PostsService {
 
     return undefined;
   }
+
+  private async ensureExists(id: number) {
+    const count = await this.prisma.post.count({
+      where: { id },
+    });
+
+    if (!count) {
+      throw new NotFoundException(`Post with id ${id} not found`);
+    }
+  }
+
+  private handlePrismaError(error: unknown): never {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      throw new ConflictException('Post with this slug already exists');
+    }
+
+    throw error;
+  }
 }
-
-
 
 // create(dto)
 // findAll() для админки
