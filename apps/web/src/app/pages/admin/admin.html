@@ -1,1 +1,137 @@
-<p>admin works!</p>
+<section class="admin-page">
+  <div class="hero-banner">
+    <div>
+      <span class="eyebrow">PrimeNG Admin</span>
+      <h1>Notes control room</h1>
+      <p>Manage drafts, polish published notes, and keep your editorial pipeline moving.</p>
+    </div>
+
+    <p-button
+      label="Refresh list"
+      icon="pi pi-refresh"
+      severity="secondary"
+      variant="outlined"
+      (onClick)="adminService.loadPosts()"
+    />
+  </div>
+
+  <div class="workspace">
+    <app-admin-form
+      [post]="selectedPost()"
+      (saved)="handleSaved()"
+      (canceled)="cancelEdit()"
+    />
+
+    <p-card class="table-card">
+      <ng-template pTemplate="header">
+        <div class="table-header">
+          <div>
+            <span class="eyebrow">Library</span>
+            <h2>All posts</h2>
+          </div>
+
+          <span class="count-pill">
+            {{ adminService.posts().length }} items
+          </span>
+        </div>
+      </ng-template>
+
+      @if (adminService.errorMessage()) {
+        <p-message severity="error" [text]="adminService.errorMessage()" />
+      }
+
+      @if (adminService.isLoading()) {
+        <div class="loading-state">
+          <p-progress-spinner
+            strokeWidth="4"
+            fill="transparent"
+            animationDuration=".8s"
+            [style]="{ width: '48px', height: '48px' }"
+          />
+          <p>Loading posts...</p>
+        </div>
+      } @else if (!adminService.posts().length) {
+        <div class="empty-state">
+          <i class="pi pi-inbox"></i>
+          <p>No posts yet. Create your first note in the editor.</p>
+        </div>
+      } @else {
+        <p-table
+          [value]="adminService.posts()"
+          [tableStyle]="{ 'min-width': '40rem' }"
+          responsiveLayout="scroll"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Title</th>
+              <th>Slug</th>
+              <th>Status</th>
+              <th>Updated</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-post>
+            <tr>
+              <td>
+                <div class="title-cell">
+                  <strong>{{ post.title }}</strong>
+                  @if (post.excerpt) {
+                    <small>{{ post.excerpt }}</small>
+                  }
+                </div>
+              </td>
+
+              <td>
+                <code>{{ post.slug }}</code>
+              </td>
+
+              <td>
+                <div class="status-cell">
+                  <p-tag
+                    [value]="post.status"
+                    [severity]="getSeverity(post.status)"
+                  />
+
+                  <p-select
+                    [options]="statusOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    [ngModel]="post.status"
+                    [disabled]="isUpdatingStatusId() === post.id"
+                    appendTo="body"
+                    class="status-select"
+                    (onChange)="updateStatus(post, $event.value)"
+                  />
+                </div>
+              </td>
+
+              <td>{{ post.updatedAt | date: 'medium' }}</td>
+
+              <td class="actions-col">
+                <div class="row-actions">
+                  <p-button
+                    icon="pi pi-pencil"
+                    severity="secondary"
+                    variant="text"
+                    ariaLabel="Edit post"
+                    (onClick)="startEdit(post)"
+                  />
+
+                  <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    variant="text"
+                    [loading]="isDeletingId() === post.id"
+                    ariaLabel="Delete post"
+                    (onClick)="deletePost(post)"
+                  />
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      }
+    </p-card>
+  </div>
+</section>

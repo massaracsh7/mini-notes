@@ -46,7 +46,8 @@ export class AdminService {
   );
 
   addPost(data: PostPayload) {
-    this.http
+      this._errorMessage.set('');
+      return  this.http
       .post<Post>(`${API_URL}/admin/posts`, data)
       .pipe(
         tap((data) => this._posts.update((posts) => [...posts, data])),
@@ -55,38 +56,34 @@ export class AdminService {
           return EMPTY;
         }),
       )
-      .subscribe();
   }
 
-  updatePost(id: number, data: Partial<PostPayload>) {
-    this._errorMessage.set('');
-    return this.http
-      .patch<Post>(`${API_URL}/admin/posts/${id}`, data)
-      .pipe(
-        tap((updatedPost) => {
-          this._posts.update((posts) =>
-            posts.map((post) => (post.id === updatedPost.id ? updatedPost : post)),
-          );
-        }),
-        catchError(() => {
-          this._errorMessage.set('Failed to update post');
-          return EMPTY;
-        }),
-      )
-      .subscribe();
-  }
+updatePost(id: number, data: Partial<PostPayload>) {
+  this._errorMessage.set('');
 
-  deletePost(id: number) {
-    this._errorMessage.set('');
-    return this.http
-      .delete<Post>(`${API_URL}/admin/posts/${id}`)
-      .pipe(
-        tap(() => this._posts.update((posts) => posts.filter((post) => post.id !== id))),
-        catchError(() => {
-          this._errorMessage.set('Failed to delete post');
-          return EMPTY;
-        }),
-      )
-      .subscribe();
-  }
+  return this.http.patch<Post>(`${API_URL}/admin/posts/${id}`, data).pipe(
+    tap((updatedPost) => {
+      this._posts.update((posts) =>
+        posts.map((post) => (post.id === updatedPost.id ? updatedPost : post)),
+      );
+    }),
+    catchError(() => {
+      this._errorMessage.set('Failed to update post');
+      return EMPTY;
+    }),
+  );
+}
+deletePost(id: number) {
+  this._errorMessage.set('');
+
+  return this.http.delete<Post>(`${API_URL}/admin/posts/${id}`).pipe(
+    tap(() => {
+      this._posts.update((posts) => posts.filter((post) => post.id !== id));
+    }),
+    catchError(() => {
+      this._errorMessage.set('Failed to delete post');
+      return EMPTY;
+    }),
+  );
+}
 }

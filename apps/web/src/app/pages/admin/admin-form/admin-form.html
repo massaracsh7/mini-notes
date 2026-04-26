@@ -1,0 +1,85 @@
+<p-card class="editor-card">
+  <ng-template pTemplate="header">
+    <div class="card-hero">
+      <div>
+        <span class="eyebrow">Editorial</span>
+        <h2>{{ isEditMode ? 'Refine your note' : 'Publish a fresh note' }}</h2>
+      </div>
+      <i class="pi pi-file-edit hero-icon"></i>
+    </div>
+  </ng-template>
+
+  <form [formGroup]="formPost" (ngSubmit)="submit()" class="editor-form">
+    <div class="field-grid">
+      <label class="field">
+        <span>Title</span>
+        <input pInputText formControlName="title" id="title" fluid />
+        @if (hasFieldError('title')) {
+          <small class="field-error">Title is required.</small>
+        }
+      </label>
+
+      <label class="field">
+        <span>Slug</span>
+        <input pInputText formControlName="slug" id="slug" fluid />
+        @if (hasFieldError('slug')) {
+          <small class="field-error">Slug is required.</small>
+        } @else if (formPost.controls.slug.hasError('serverConflict')) {
+          <small class="field-error">This slug is already in use.</small>
+        }
+      </label>
+    </div>
+
+    <div class="field-grid">
+      <label class="field">
+        <span>Status</span>
+        <p-select
+          formControlName="status"
+          [options]="statuses"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Choose status"
+          appendTo="body"
+          fluid
+        />
+      </label>
+
+      <label class="field">
+        <span>Excerpt</span>
+        <input pInputText formControlName="excerpt" id="excerpt" fluid />
+      </label>
+    </div>
+
+    <label class="field">
+      <span>Markdown</span>
+      <textarea pTextarea formControlName="contentMarkdown" id="contentMarkdown"></textarea>
+      @if (hasFieldError('contentMarkdown')) {
+        <small class="field-error">Markdown content is required.</small>
+      }
+    </label>
+
+    @if (errorMessage()) {
+      <p-message severity="error" [text]="errorMessage()" />
+    }
+
+    <div class="actions">
+      <p-button
+        type="submit"
+        [loading]="isSaving()"
+        [label]="isEditMode ? 'Update post' : 'Create post'"
+        icon="pi pi-check"
+      />
+
+      @if (isEditMode) {
+        <p-button
+          type="button"
+          label="Cancel"
+          icon="pi pi-times"
+          severity="secondary"
+          variant="outlined"
+          (onClick)="cancelEdit()"
+        />
+      }
+    </div>
+  </form>
+</p-card>

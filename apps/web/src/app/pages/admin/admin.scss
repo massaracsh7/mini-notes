@@ -1,0 +1,133 @@
+:host {
+  display: block;
+}
+
+.admin-page {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hero-banner {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.8rem;
+  border-radius: 1.75rem;
+  background:
+    radial-gradient(circle at top right, rgba(52, 211, 153, 0.42), transparent 30%),
+    linear-gradient(135deg, #0f172a 0%, #123c2a 100%);
+  color: #f8fffb;
+  box-shadow: 0 28px 60px rgba(7, 24, 18, 0.26);
+}
+
+.hero-banner h1,
+.hero-banner p,
+.table-header h2 {
+  margin: 0;
+}
+
+.hero-banner p {
+  margin-top: 0.65rem;
+  max-width: 38rem;
+  color: rgba(248, 255, 251, 0.82);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7ee7b4;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.count-pill {
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.loading-state,
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 0.9rem;
+  padding: 2rem 1rem 1rem;
+  text-align: center;
+  color: #52665c;
+}
+
+.empty-state i {
+  font-size: 2rem;
+  color: #2f6a4f;
+}
+
+.title-cell {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.status-cell {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.title-cell small {
+  color: #64748b;
+}
+
+code {
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.45rem;
+  background: #f1f5f9;
+  color: #155e75;
+}
+
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+:host ::ng-deep .status-select {
+  min-width: 10rem;
+}
+
+.actions-col {
+  width: 8rem;
+  text-align: right;
+}
+
+@media (max-width: 1100px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-banner,
+  .table-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
