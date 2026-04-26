@@ -1,0 +1,26 @@
+{
+  "name": "mini-notes-publisher",
+  "private": true,
+  "packageManager": "npm@11.7.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "prepare": "husky",
+    "lint": "npm run lint:api && npm run lint:web",
+    "lint:api": "npm --workspace apps/api run lint",
+    "lint:web": "npm --workspace apps/web run lint",
+    "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,mjs,cjs,json,md,scss,css,html}\" \"*.{json,md}\"",
+    "format:check": "prettier --check \"apps/**/*.{ts,tsx,js,jsx,mjs,cjs,json,md,scss,css,html}\" \"*.{json,md}\""
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs,json,md,scss,css,html}": "prettier --write",
+    "apps/api/src/**/*.ts": "npm --workspace apps/api run lint --",
+    "apps/web/src/**/*.ts": "npm --workspace apps/web run lint --"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.1",
+    "prettier": "^3.8.1"
+  }
+}
