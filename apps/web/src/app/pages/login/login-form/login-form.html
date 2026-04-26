@@ -1,0 +1,45 @@
+<p-card class="login-card">
+  <ng-template pTemplate="header">
+    <div class="login-hero">
+      <div>
+        <span class="eyebrow">Mini Notes</span>
+        <h2>Welcome back</h2>
+        <p>Sign in to manage posts, drafts, and publication flow.</p>
+      </div>
+      <div class="icon-shell">
+        <i class="pi pi-lock"></i>
+      </div>
+    </div>
+  </ng-template>
+
+  <form [formGroup]="formLogin" (ngSubmit)="submit()" class="login-form">
+    <label class="field">
+      <span>Email</span>
+      <input pInputText formControlName="email" type="email" id="email" fluid />
+    </label>
+
+    <label class="field">
+      <span>Password</span>
+      <p-password
+        formControlName="password"
+        inputId="password"
+        [feedback]="false"
+        [toggleMask]="true"
+        class="password-field"
+        fluid
+      />
+    </label>
+
+    @if (errorMessage()) {
+      <p-message severity="error" [text]="errorMessage()" />
+    }
+
+    <p-button
+      type="submit"
+      label="Sign in"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      [loading]="isSubmitting()"
+    />
+  </form>
+</p-card>
