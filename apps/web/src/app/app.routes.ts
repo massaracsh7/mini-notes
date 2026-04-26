@@ -17,4 +17,13 @@ export const routes: Routes = [
     path: 'posts/:slug',
     loadComponent: () => import('../app/pages/post/post').then((m) => m.PostPage),
   },
+  {
+    path: '404',
+    loadComponent: () => import('../app/pages/not-found/not-found').then((m) => m.NotFoundPage) 
+  },
+  {
+    path: '**',
+    redirectTo: '/404'
+  }
+
 ];
