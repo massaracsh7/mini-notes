@@ -1,0 +1,67 @@
+@if (featuredPost(); as featured) {
+  <section class="posts-shell">
+    <p-card class="featured-post">
+      <ng-template pTemplate="header">
+        <div class="featured-cover">
+          <span class="eyebrow">Featured note</span>
+          <p-tag value="Published" severity="success" />
+        </div>
+      </ng-template>
+
+      <div class="featured-content">
+        <h2>{{ featured.title }}</h2>
+        <p class="excerpt">{{ getSummary(featured.excerpt, featured.contentMarkdown) }}</p>
+        <div class="meta-row">
+          <span>{{ featured.createdAt | date: 'longDate' }}</span>
+        </div>
+        <div class="card-actions">
+          <p-button
+            label="Read full note"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [routerLink]="['/posts', featured.slug]"
+          />
+        </div>
+      </div>
+    </p-card>
+
+    @if (restPosts().length) {
+      <div class="posts-grid">
+        @for (post of restPosts(); track post.id) {
+          <p-card class="post-card">
+            <ng-template pTemplate="header">
+              <div class="post-card-header">
+                <span class="mini-label">Note</span>
+                <p-tag value="Published" severity="secondary" />
+              </div>
+            </ng-template>
+
+            <div class="post-card-body">
+              <h3>{{ post.title }}</h3>
+              <p>{{ getSummary(post.excerpt, post.contentMarkdown) }}</p>
+              <div class="meta-row">
+                <span>{{ post.createdAt | date: 'mediumDate' }}</span>
+              </div>
+              <div class="card-actions">
+                <p-button
+                  label="Open"
+                  severity="secondary"
+                  variant="outlined"
+                  [routerLink]="['/posts', post.slug]"
+                />
+              </div>
+            </div>
+          </p-card>
+        }
+      </div>
+    }
+  </section>
+} @else {
+  <p-card class="empty-posts">
+    <div class="empty-state">
+      <i class="pi pi-book"></i>
+      <h3>No published posts yet</h3>
+      <p>The public page will light up as soon as the first note is published.</p>
+    </div>
+  </p-card>
+}

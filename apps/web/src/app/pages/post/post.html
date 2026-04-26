@@ -1,0 +1,58 @@
+@if (post(); as post) {
+  <article class="post-page">
+    <div class="post-hero">
+      <p-button
+        label="Back to notes"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        variant="outlined"
+        routerLink="/"
+      />
+
+      <div class="hero-copy">
+        <div class="hero-meta">
+          <span class="eyebrow">Public note</span>
+          <p-tag value="Published" severity="success" />
+        </div>
+        <h1>{{ post.title }}</h1>
+        @if (post.excerpt) {
+          <p class="excerpt">{{ post.excerpt }}</p>
+        }
+        <div class="post-meta">
+          <span>{{ post.createdAt | date: 'longDate' }}</span>
+          <code>{{ post.slug }}</code>
+        </div>
+      </div>
+    </div>
+
+    <p-card class="markdown-card">
+      <div class="markdown-body" [innerHTML]="markdownContent()"></div>
+    </p-card>
+  </article>
+} @else {
+  <section class="post-page">
+    <p-card class="missing-post-card">
+      <div class="missing-post">
+        <div class="missing-badge">
+          <i class="pi pi-compass"></i>
+          <span>Missing note</span>
+        </div>
+        <h2>We couldn't find that post.</h2>
+        <p>
+          The note at <code>{{ slug() }}</code> may have been unpublished, renamed, or never
+          existed.
+        </p>
+        <div class="missing-actions">
+          <p-button label="Browse notes" icon="pi pi-home" routerLink="/" />
+          <p-button
+            label="Open login"
+            icon="pi pi-user"
+            severity="secondary"
+            variant="outlined"
+            routerLink="/login"
+          />
+        </div>
+      </div>
+    </p-card>
+  </section>
+}

@@ -25,6 +25,7 @@ export class AdminService {
   readonly posts = this._posts.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
   readonly errorMessage = this._errorMessage.asReadonly();
+  
   loadPosts() {
     this._isLoading.set(true);
     this._errorMessage.set('');
