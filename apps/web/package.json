@@ -6,8 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --watch=false"
+    "test": "ng test --watch=false",
+    "test:smoke": "ng test --watch=false --include src/app/auth.interceptor.spec.ts --include src/app/pages/main/main.spec.ts"
   },
   "private": true,
   "packageManager": "npm@11.7.0",

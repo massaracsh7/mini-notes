@@ -64,7 +64,7 @@ export class PostsService {
   async update(id: number, updatePostDto: UpdatePostDto) {
     await this.ensureExists(id);
     try {
-      await this.prisma.post.update({
+      return await this.prisma.post.update({
         where: { id },
         data: {
           ...updatePostDto,

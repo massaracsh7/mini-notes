@@ -16,11 +16,7 @@
   </div>
 
   <div class="workspace">
-    <app-admin-form
-      [post]="selectedPost()"
-      (saved)="handleSaved()"
-      (canceled)="cancelEdit()"
-    />
+    <app-admin-form [post]="selectedPost()" (saved)="handleSaved()" (canceled)="cancelEdit()" />
 
     <p-card class="table-card">
       <ng-template pTemplate="header">
@@ -31,7 +27,9 @@
           </div>
 
           <span class="count-pill">
-            {{ adminService.posts().length }} items
+            {{ adminService.posts().length }} items •
+            {{ adminService.publishedPosts().length }} published •
+            {{ adminService.unpublishedPosts().length }} unpublished
           </span>
         </div>
       </ng-template>
@@ -88,10 +86,7 @@
 
               <td>
                 <div class="status-cell">
-                  <p-tag
-                    [value]="post.status"
-                    [severity]="getSeverity(post.status)"
-                  />
+                  <p-tag [value]="post.status" [severity]="getSeverity(post.status)" />
 
                   <p-select
                     [options]="statusOptions"

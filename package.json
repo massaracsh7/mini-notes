@@ -15,8 +15,8 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs,json,md,scss,css,html}": "prettier --write",
-    "apps/api/src/**/*.ts": "npm --workspace apps/api run lint --",
-    "apps/web/src/**/*.ts": "npm --workspace apps/web run lint --"
+    "apps/api/src/**/*.ts": "npm --workspace apps/api exec eslint -- --fix",
+    "apps/web/src/**/*.ts": "npm --workspace apps/web exec eslint -- --fix"
   },
   "devDependencies": {
     "husky": "^9.1.7",
