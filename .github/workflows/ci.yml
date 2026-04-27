@@ -13,17 +13,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mini_notes
 
-      - uses: actions/setup-node@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      - name: Install deps
+        run: npm ci
 
-      - run: npm --workspace apps/api run build
-      - run: npm --workspace apps/web run build
+      - name: Generate Prisma Client
+        run: npm --workspace apps/api exec prisma generate
 
-      - run: docker compose build
+      - name: Build API
+        run: npm --workspace apps/api run build
+
+      - name: Build WEB
+        run: npm --workspace apps/web run build
+
+      - name: Docker build
+        run: docker compose build

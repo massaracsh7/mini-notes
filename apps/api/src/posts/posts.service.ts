@@ -17,8 +17,8 @@ export class PostsService {
       return await this.prisma.post.create({
         data: { ...createPostDto, createdAt: new Date() },
       });
-    } catch (error) {
-      this.handlePrismaError(error);
+    } catch (error: unknown) {
+      return this.handlePrismaError(error);
     }
   }
 
@@ -71,8 +71,8 @@ export class PostsService {
           publishedAt: this.resolvePublishedAt(updatePostDto),
         },
       });
-    } catch (error) {
-      this.handlePrismaError(error);
+    } catch (error: unknown) {
+      return this.handlePrismaError(error);
     }
   }
 
@@ -121,15 +121,3 @@ export class PostsService {
     throw error;
   }
 }
-
-// create(dto)
-// findAll() для админки
-// findPublished() для публичной части
-// findOne(id)
-// findPublishedBySlug(slug)
-// update(id, dto)
-// delete(id)
-// Логика:
-
-// при published ставить publishedAt = new Date()
-// при draft и archived сбрасывать publishedAt
