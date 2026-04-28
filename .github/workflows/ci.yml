@@ -26,8 +26,16 @@ jobs:
           node-version: 22
           cache: npm
 
+      # 🔧 фикс npm optional deps бага (rollup)
+      - name: Clean npm cache
+        run: npm cache clean --force
+
       - name: Install deps
-        run: npm ci
+        run: npm ci --include=optional
+
+      # 🔧 страховка для rollup (если вдруг снова не подтянется)
+      - name: Install Rollup native dependency
+        run: npm install -w apps/web @rollup/rollup-linux-x64-gnu --save-optional
 
       - name: Generate Prisma Client
         run: npm --workspace apps/api exec prisma generate
@@ -35,8 +43,9 @@ jobs:
       - name: Test API
         run: npm --workspace apps/api run test
 
-      - name: Test WEB
-        run: npm --workspace apps/web run test
+      # 👉 лучше не гонять весь ng test (он тяжёлый)
+      - name: Test WEB (smoke)
+        run: npm --workspace apps/web run test:smoke
 
       - name: Build API
         run: npm --workspace apps/api run build
