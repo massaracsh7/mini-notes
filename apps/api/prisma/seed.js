@@ -191,18 +191,25 @@ The more normal AI becomes, the more important calm, practical literacy becomes 
 ];
 
 async function main() {
-  const passwordHash = await bcrypt.hash('admin123', 10);
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (!adminEmail || !adminPassword) {
+    throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD must be set in .env');
+  }
+
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
 
   const user = await prisma.user.upsert({
     where: {
-      email: 'admin@example.com',
+      email: adminEmail,
     },
     update: {
       passwordHash,
       role: 'admin',
     },
     create: {
-      email: 'admin@example.com',
+      email: adminEmail,
       passwordHash,
       role: 'admin',
     },
